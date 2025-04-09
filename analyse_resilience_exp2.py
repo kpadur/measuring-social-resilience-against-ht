@@ -37,8 +37,8 @@ machine_id = os.environ.get('MACHINE_ID', '9') # Default machine ID is 1, pick a
 save_path = os.path.join("results", "exp2-results")
 get_nn_path = os.path.join("regagent-parameters")
 get_others_nn_path = os.path.join("attacker-defender-parameters")
-get_data = os.path.join("parameters")
-
+get_param = os.path.join("parameters")
+get_data = os.path.join("data")
 # %% [markdown]
 # Specify number of agents in the environment
 nProviders = 3
@@ -47,7 +47,7 @@ nMalAgents = 10
 
 # %% [markdown]
 # Initialise (tuned) hyperparameters
-df = pd.read_csv(os.path.join(get_data, "hyperparameters.csv"))
+df = pd.read_csv(os.path.join(get_param, "hyperparameters.csv"))
 hyperparameters = dict(zip(df['hyperparameter'], df['value']))
 
 alpha_rnn1 = hyperparameters['alpha_1']
@@ -68,7 +68,7 @@ beta_decay = int(hyperparameters['n_2'])
 
 # %% [markdown]
 # Initialise parameters
-df = pd.read_csv(os.path.join(get_data, "parameters.csv"))
+df = pd.read_csv(os.path.join(get_param, "parameters.csv"))
 parameters = dict(zip(df['parameter'], df['value']))
 
 # Social network parameters
@@ -92,7 +92,6 @@ forgetting_factor = parameters['forgetting_factor']
 n_steps = 500 # number of steps per episode
 number_of_episodes = 100 # number of episodes
 vis_freq = 1000 # never visualise
-saving_freq = 2
 save_fig = False # save figures
 warmup_time = 200 # no data is collected, to measure attack impact better
 attack_campaign_duration = 100 # number of timesteps for attack and defence campaigns
@@ -159,9 +158,7 @@ for agent_name, agent in regular_agents.items():
 # %% [markdown]
 #  Initialise defenders
 service_providers = {f"defagent{agent}": A2CServiceProvider(state_shape_defenders, n_filter, n_answer, \
-                                                            alpha_dnn1, alpha_dnn2, warmup_time, attack_campaign_duration, device) 
-                    for agent in env.providers}
-
+                                                            alpha_dnn1, alpha_dnn2, device) for agent in env.providers}
 
 for agent_name, agent in service_providers.items():
     # Load Action NN and its optimizer % get_others_nn_path
