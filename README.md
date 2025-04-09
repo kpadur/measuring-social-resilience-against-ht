@@ -56,6 +56,9 @@ The following R libraries are required:
 - psych (version 2.4.12 or higher)
 - dplyr (version 1.1.4 or higher)
 - tidyverse (version 2.0.0 or higher)
+- mcp (version 0.3.4 or higher)
+- pracma (version 2.4.4 or higher)
+- rjags (version 4.17 or higher)
 ```
 ## Run experiments
 ```
