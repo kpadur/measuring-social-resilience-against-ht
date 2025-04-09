@@ -7,6 +7,7 @@ library(tidyverse)
 
 # Define the path and pattern
 path <- "exp2-results/"
+path <- "exp3-results/" # alternatively
 pattern <- ".*-1-regagents-trust-data\\.csv" # # change number based on strategy id
 
 # List and read all matching files
@@ -49,6 +50,8 @@ plot(subset(stats_df$group3_trust_in_sp1_mean, stats_df$timestep > 0))
 
 # Write summary_stats to csv
 write.csv(stats_df, "exp2-results/attack-strategies/summary_stats_df_strategy_1.csv",
+          row.names=FALSE)
+write.csv(stats_df, "exp3-results/attack-strategies/summary_stats_df_strategy_1.csv",
           row.names=FALSE)
 
 #####
