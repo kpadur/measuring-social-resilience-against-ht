@@ -31,11 +31,11 @@ date = datetime.datetime.now().strftime("%Y-%m-%d")
 timestamp = datetime.datetime.now().strftime("%H-%M-%S")
 chapter = 5
 experiment = 3 # with defence
-machine_id = os.environ.get('MACHINE_ID', '9') # Default machine ID is 1, pick another to try different attack strategies
+machine_id = os.environ.get('MACHINE_ID', '1') # Default machine ID is 1, pick another to try different attack strategies
 # %% [markdown]
 # Specify output directory
 cs_cluster = False
-myriad = False
+myriad = True
 work = False
 if cs_cluster:
     save_path = f"/home/kpadur/results/output_data/"
