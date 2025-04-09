@@ -50,15 +50,12 @@ The following Python libraries are required:
 - SALib (version 1.5.0 or higher)
 - statsmodels (version 0.14.2 or higher)
 
-R version 4.3.1 or higher version is required for data analysis and visualisation.
+R version 4.4.2 or higher version is required for data analysis and visualisation.
 
 The following R libraries are required:
-- readr (version 2.1.4 or higher)
-- ggplot2 (version 3.4.4 or higher)
-- cowplot (version 1.1.2 or higher)
-- zoo (version 1.8 or higher)
-- dplyr (version 1.1.3 or higher)
-- tidyr (version 1.3.0 or higher)
+- psych (version 2.4.12 or higher)
+- dplyr (version 1.1.4 or higher)
+- tidyverse (version 2.0.0 or higher)
 ```
 ## Run experiments
 ```
