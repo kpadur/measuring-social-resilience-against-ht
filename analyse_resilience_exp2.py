@@ -33,28 +33,12 @@ chapter = 5
 experiment = 2 # without defence
 machine_id = os.environ.get('MACHINE_ID', '9') # Default machine ID is 1, pick another to try different attack strategies
 # %% [markdown]
-# Specify output directory
-cs_cluster = False
-myriad = False
-work = False
-if cs_cluster:
-    save_path = f"/home/kpadur/results/output_data/"
-    save_nns_path = f"/home/kpadur/results/output_data/"
-elif myriad:
-    save_path = f"/home/ucabpad/Scratch/workspace/output_data/"
-    get_nn_path = f"/home/ucabpad/Work/ch5-exp2-02-2025/regagent-parameters/"
-    get_others_nn_path = f"/home/ucabpad/Work/ch5-exp2-02-2025/others-parameters/"
-    get_data = f"/home/ucabpad/Work/ch5-exp2-02-2025/"
-elif work:
-    save_path = "/Users/kpadur/Documents/measuring-social-resilience/results/exp2-results/"
-    get_nn_path = f"/Users/kpadur/Documents/measuring-social-resilience/regagent-parameters/"
-    get_others_nn_path = f"/Users/kpadur/Documents/measuring-social-resilience/others-parameters/"
-    get_data = f"/Users/kpadur/Documents/measuring-social-resilience/"
-else:   
-    save_path = "/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/test-results/exp2-test-results/"
-    get_nn_path = f"/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/regagent-parameters/"
-    get_others_nn_path = f"/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/others-parameters/"
-    get_data = f"/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/"
+# Specify input/output directory
+save_path = os.path.join("results", "exp2-results")
+get_nn_path = os.path.join("regagent-parameters")
+get_others_nn_path = os.path.join("attacker-defender-parameters")
+get_data = os.path.join("parameters")
+
 # %% [markdown]
 # Specify number of agents in the environment
 nProviders = 3
@@ -66,21 +50,21 @@ nMalAgents = 10
 df = pd.read_csv(os.path.join(get_data, "hyperparameters.csv"))
 hyperparameters = dict(zip(df['hyperparameter'], df['value']))
 
-alpha_rnn1 = hyperparameters['alpha_1'] # 0.000224694
-alpha_rnn2 = hyperparameters['alpha_2'] # 0.000273221
-alpha_ann1 = hyperparameters['alpha_3'] # 3.85971E-05
-alpha_ann2 = hyperparameters['alpha_4'] # 4.67539E-05
-alpha_ann3 = hyperparameters['alpha_5'] # 4.36252E-05
-alpha_dnn1 = hyperparameters['alpha_6'] # 4.94221E-05
-alpha_dnn2 = hyperparameters['alpha_7'] # 2.89538E-05
-gamma_ann1 = hyperparameters['gamma_3'] # 0.299733041
-gamma_ann2 = hyperparameters['gamma_4'] # 0.857784503
-gamma_ann3 = hyperparameters['gamma_5'] # 0.757581416
-gamma_dnn1 = hyperparameters['gamma_6'] # 0.828653931
-gamma_dnn2 = hyperparameters['gamma_7'] # 0.804671585
+alpha_rnn1 = hyperparameters['alpha_1']
+alpha_rnn2 = hyperparameters['alpha_2']
+alpha_ann1 = hyperparameters['alpha_3']
+alpha_ann2 = hyperparameters['alpha_4']
+alpha_ann3 = hyperparameters['alpha_5']
+alpha_dnn1 = hyperparameters['alpha_6']
+alpha_dnn2 = hyperparameters['alpha_7']
+gamma_ann1 = hyperparameters['gamma_3']
+gamma_ann2 = hyperparameters['gamma_4']
+gamma_ann3 = hyperparameters['gamma_5']
+gamma_dnn1 = hyperparameters['gamma_6']
+gamma_dnn2 = hyperparameters['gamma_7']
 beta_start = 1
-beta_end = hyperparameters['beta_2'] # 0.006099262
-beta_decay = int(hyperparameters['n_2']) # 11148
+beta_end = hyperparameters['beta_2']
+beta_decay = int(hyperparameters['n_2'])
 
 # %% [markdown]
 # Initialise parameters
@@ -88,20 +72,20 @@ df = pd.read_csv(os.path.join(get_data, "parameters.csv"))
 parameters = dict(zip(df['parameter'], df['value']))
 
 # Social network parameters
-kappa = int(parameters['kappa']) # 6
-rho = parameters['rho'] # 0.05
+kappa = int(parameters['kappa'])
+rho = parameters['rho']
 
 # Cyber-physical system parameters
-center_up_to_down = [parameters['center_up_to_down']] * nProviders # [0.01]*nProviders # Psi: prob (1 to -1)
-center_down_to_up = [parameters['center_down_to_up']] * nProviders # [0.25]*nProviders # psi: prob (-1 to 1)
-end_up_to_down = [parameters['end_up_to_down']] * nProviders # [0.03]*nProviders # Lambda: prob (1 to -1)
-end_down_to_up = [parameters['end_down_to_up']] * nProviders  # [0.30]*nProviders # lambda: prob (-1 to 1)
-cost = [parameters['cost']] * nProviders # [0.50]*nProviders
+center_up_to_down = [parameters['center_up_to_down']] * nProviders
+center_down_to_up = [parameters['center_down_to_up']] * nProviders
+end_up_to_down = [parameters['end_up_to_down']] * nProviders
+end_down_to_up = [parameters['end_down_to_up']] * nProviders
+cost = [parameters['cost']] * nProviders
 
 # Agents' attributes (parameters)
-direct_exp_weight = parameters['direct_exp_weight'] # 0.9
-feedback_adj_rate = parameters['feedback_adj_rate'] # 0.5
-forgetting_factor = parameters['forgetting_factor'] # 0.9
+direct_exp_weight = parameters['direct_exp_weight']
+feedback_adj_rate = parameters['feedback_adj_rate']
+forgetting_factor = parameters['forgetting_factor']
 
 # %% [markdown]
 # Define training time
@@ -110,7 +94,6 @@ number_of_episodes = 100 # number of episodes
 vis_freq = 1000 # never visualise
 saving_freq = 2
 save_fig = False # save figures
-save_nns = False # save neural networks
 warmup_time = 200 # no data is collected, to measure attack impact better
 attack_campaign_duration = 100 # number of timesteps for attack and defence campaigns
 
@@ -136,8 +119,7 @@ agent_ids, agents, regagents, malagents, providers, neighbours=\
 regagent_example = np.random.choice(regagents)
 defender_example = np.random.choice(providers)
 malagent_example = np.random.choice(malagents)
-print(malagents)
-print(neighbours)
+
 # Define regular agents' state space, actions, and opinions
 state_shape, n_actions, n_opinions = env.observation_spaces[f"regagent{regagent_example}"].shape[0], \
     env.action_spaces[f"regagent{regagent_example}"][0].n, env.action_spaces[f"regagent{regagent_example}"][1].n
@@ -164,13 +146,13 @@ regular_agents = {f"regagent{agent}": A2CRegAgent(state_shape, n_actions, n_opin
                 for agent in env.regagents}
 
 for agent_name, agent in regular_agents.items():
-    # Load Action NN and its optimizer
-    action_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_actions_2025-01-22_743.pth'))
+    # Load Action NN and its optimiser
+    action_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_actions.pth'))
     agent.action_nn.load_state_dict(action_checkpoint['actions_state_dict'])
     agent.action_opt.load_state_dict(action_checkpoint['actions_opt_state_dict'])
 
-    # Load Opinion NN and its optimizer
-    opinion_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_opinions_2025-01-22_743.pth'))
+    # Load Opinion NN and its optimiser
+    opinion_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_opinions.pth'))
     agent.opinion_nn.load_state_dict(opinion_checkpoint['opinions_state_dict'])
     agent.opinion_opt.load_state_dict(opinion_checkpoint['opinions_opt_state_dict'])
 
@@ -183,12 +165,12 @@ service_providers = {f"defagent{agent}": A2CServiceProvider(state_shape_defender
 
 for agent_name, agent in service_providers.items():
     # Load Action NN and its optimizer % get_others_nn_path
-    filter_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_filter_2025-01-28_743.pth'))
+    filter_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_filter.pth'))
     agent.filter_nn.load_state_dict(filter_checkpoint['filter_nn'])
     agent.filter_opt.load_state_dict(filter_checkpoint['filter_opt'])
     
     # Load Opinion NN and its optimizer
-    answer_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_answer_2025-01-28_743.pth'))
+    answer_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_answer.pth'))
     agent.answer_nn.load_state_dict(answer_checkpoint['answer_nn'])
     agent.answer_opt.load_state_dict(answer_checkpoint['answer_opt'])
 
@@ -202,7 +184,7 @@ attack_strategies_array = np.zeros((number_of_strategies, n_steps + 1), dtype=in
 attack_strategies = populate_attack_strategy(df, attack_strategies_array, warmup_time)
 # Define which attack strategy to use
 use_attack_strategy = attack_strategies[int(machine_id)]
-print("Using attack strategy", use_attack_strategy)
+
 # %% [markdown]
 #  Initialise attackers
 attack_target = 1 # initialised with environment
@@ -213,19 +195,20 @@ malicious_agent = {f"malagent": A2CMalAgent(state_size_attackers, n_stage_action
 
 for agent_name, agent in malicious_agent.items():
     # Load Action NN and its optimizer
-    stage_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_stage_action_2025-01-28_743.pth')) # local
+    stage_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_stage_action.pth')) # local
     agent.stage_action_nn.load_state_dict(stage_checkpoint['stage_action_nn'])
     agent.stage_action_opt.load_state_dict(stage_checkpoint['stage_action_opt'])
     
     # Load Opinion NN and its optimizer
-    cyber_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_cyber_2025-01-28_743.pth')) # local
+    cyber_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_cyber.pth')) # local
     agent.cyber_action_nn.load_state_dict(cyber_checkpoint['cyber_action_nn'])
     agent.cyber_action_opt.load_state_dict(cyber_checkpoint['cyber_action_opt'])
 
     # Load Opinion NN and its optimizer
-    disinfo_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_disinfo_2025-01-28_743.pth')) # local
+    disinfo_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_disinfo.pth')) # local
     agent.disinfo_action_nn.load_state_dict(disinfo_checkpoint['disinfo_action_nn'])
     agent.disinfo_action_opt.load_state_dict(disinfo_checkpoint['disinfo_action_opt'])
+
 # %% [markdown]
 # **Collect data**
 regagent_total_rewards, regagent_action_rewards, regagent_opinion_rewards = np.zeros(number_of_episodes + 1), np.zeros(number_of_episodes + 1), np.zeros(number_of_episodes + 1)
@@ -258,7 +241,6 @@ loss4_history, loss5_history = np.zeros((number_of_episodes + 1, len(providers))
 for episode in range(1, number_of_episodes + 1):
     # Restart environment
     episode_seed = np.random.randint(0, 1000)
-    print("episode seed", episode_seed)
     observations, _ = env.reset(seed = episode_seed)
 
     # Initialise dictionaries to store rewards, observations, and actions
@@ -331,17 +313,17 @@ for episode in range(1, number_of_episodes + 1):
     # Process regagent states
     episode_states_pd = process_regagent_states_groups(all_observations, all_actions, providers, malagents, neighbours,
                                 attack_target, episode, n_steps)
-    regagent_states_pd = pd.concat([regagent_states_pd, episode_states_pd], ignore_index=True) # concatenate new data
+    regagent_states_pd = pd.concat([regagent_states_pd, episode_states_pd], ignore_index=True)
 
     # Processing regagent actions and opinions
     mean_selection_rate, mean_expression_rate = process_regagent_actions(all_actions, providers, n_steps)
-    regagent_actions_history[episode] = mean_selection_rate # add occurrences of each action (as %)
-    regagent_opinions_history[episode] = mean_expression_rate # add occurrences of each opinion (as %)
+    regagent_actions_history[episode] = mean_selection_rate
+    regagent_opinions_history[episode] = mean_expression_rate
 
     # Process service provider availability
     sp_availability_episode = process_service_provider_availability(all_actions, providers, sum_sp_availability)
     sp_availability_history[episode] = sp_availability_episode
-    sum_sp_availability = np.zeros(len(providers), dtype=int) # reset count to zero
+    sum_sp_availability = np.zeros(len(providers), dtype=int)
     
     # Store attackers information, including actions and rewards
     # Process attacker rewards
@@ -354,10 +336,10 @@ for episode in range(1, number_of_episodes + 1):
 
     # Process attacker actions
     bot_counts, disinfo_counts, episode_attack_order, episode_count_actions_per_stage = process_attacker_actions(all_actions, n_cyber_actions, n_disinfo_actions)
-    cyber_actions_history[episode] = bot_counts # [0 0 0 ..] for every potential bot size
-    contacts_history[episode] = disinfo_counts # [0 0 1 0 ...] for every contacted agent
-    attack_order[episode] = episode_attack_order # store attack order
-    count_timesteps_per_stage[episode] = episode_count_actions_per_stage # store time in each stage
+    cyber_actions_history[episode] = bot_counts
+    contacts_history[episode] = disinfo_counts
+    attack_order[episode] = episode_attack_order
+    count_timesteps_per_stage[episode] = episode_count_actions_per_stage
     
     # Store defenders information, including rewards
     # Process defender rewards
@@ -367,7 +349,6 @@ for episode in range(1, number_of_episodes + 1):
         defender_answer_rewards[episode][defender] = answer_rewards[defender]
         total_defender_rewards[episode][defender] = filter_rewards[defender] + answer_rewards[defender]
 
-    # if episode != 1 and episode % saving_freq == 0:
     # Convert regagent lists to numpy arrays
     # Save regular agents' data
     regagents_df = pd.DataFrame({'total_rewards': regagent_total_rewards[1:episode+1], 'action_rewards': regagent_action_rewards[1:episode+1], 'opinion_rewards': regagent_opinion_rewards[1:episode+1],
@@ -409,7 +390,6 @@ for episode in range(1, number_of_episodes + 1):
         print("Episode", episode, ": mean attacker reward: %.3f" % (np.mean(total_attacker_rewards[:episode])),
               " and mean defender reward: %.3f" % (np.mean(total_defender_rewards[:episode])))
     
-
         # Figure 1. Defender rewards
         plt.figure()
         for sp in providers:
@@ -469,7 +449,7 @@ for episode in range(1, number_of_episodes + 1):
             plt.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{machine_id}-regagent-score.png'))
             plt.clf()
 
-        # Plot 2: Visualise social trust in service providers
+        # Plot 5: Visualise social trust in service providers
         colors = cm.tab10(np.arange(nProviders))
         plt.figure()
         for sp in range(nProviders):
@@ -482,7 +462,7 @@ for episode in range(1, number_of_episodes + 1):
             plt.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{machine_id}-trust.png'))
             plt.clf()
 
-        # Plot 3: Visualise service provider availability
+        # Plot 6: Visualise service provider availability
         plt.figure()
         for sp in range(nProviders):
             plt.plot(sp_availability_history[1:episode, sp], color=colors[sp], linewidth=0.9, label = "Provider  {}".format(sp+1))
@@ -494,7 +474,7 @@ for episode in range(1, number_of_episodes + 1):
             plt.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{machine_id}-availability.png'))
             plt.clf()
 
-        # Plot 4.1: Visualise service request rate (%) per episode
+        # Plot 7.1: Visualise service request rate (%) per episode
         fig, axe = plt.subplots(nrows = 1, ncols = 2, figsize = (15,4))
         for sp in range(nProviders):
             axe[0].plot(regagent_actions_history[1:episode, sp], color=colors[sp], linewidth = 0.9,
@@ -504,7 +484,7 @@ for episode in range(1, number_of_episodes + 1):
         axe[0].set_ylabel("Average service request rate\nper episode")
         axe[0].grid()
         axe[0].legend(loc=(0.01, 0.50), fontsize='x-small')
-        # Plot 4.2: Visualise opinion expression rate (%) per episode
+        # Plot 7.2: Visualise opinion expression rate (%) per episode
         for o in range(nProviders*2):
             provider_index = o // 2  # Determine which provider this opinion corresponds to
             opinion_type = "Negative" if o % 2 == 0 else "Positive"  # Alternate between negative and positive
