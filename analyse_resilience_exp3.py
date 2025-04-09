@@ -1,9 +1,10 @@
 # %% [markdown]
 # ## Measuring Social Resilience against Hybrid Threats
 # Chapter 5\ 
-# Experiment 2\
+# Experiment 3\
 # With this experiment, we analyse how the social component of the Cyber-Physical-Social system can plan, absorb, recover from and adapt to hybrid threats.\
 # We analyse how different groups of individuals (directly affected or indirectly affected) experience disruption and how they recover from it.
+# In this experiment, both attackers and defenders are within the environment at the same time.
 
 # %% [markdown]
 # Import libraries
@@ -32,6 +33,7 @@ timestamp = datetime.datetime.now().strftime("%H-%M-%S")
 chapter = 5
 experiment = 3 # with defence
 machine_id = os.environ.get('MACHINE_ID', '1') # Default machine ID is 1, pick another to try different attack strategies
+
 # %% [markdown]
 # Specify output directory
 save_path = os.path.join("results", "exp3-results")
@@ -39,6 +41,7 @@ get_nn_path = os.path.join("regagent-parameters")
 get_others_nn_path = os.path.join("attacker-defender-parameters")
 get_param = os.path.join("parameters")
 get_data = os.path.join("data")
+
 # %% [markdown]
 # Specify number of agents in the environment
 nProviders = 3
@@ -139,7 +142,8 @@ print("Regular agents' state shape is", state_shape, ", number of actions is", n
 print("Defenders' state shape is", state_shape_defenders, ", number of filter actions is", n_filter, " and number of answer actions is", n_answer)
 print("Attackers' state shape is", state_size_attackers, ", number of stage actions is", n_stage_actions, 
       ", number of cyber actions is", n_cyber_actions, " and number of disinformation actions is", n_disinfo_actions)
-# %%
+
+# %% [markdown]
 # Regular agents
 regular_agents = {f"regagent{agent}": A2CRegAgent(state_shape, n_actions, n_opinions, alpha_rnn1, alpha_rnn2, device) 
                 for agent in env.regagents}
@@ -161,12 +165,12 @@ service_providers = {f"defagent{agent}": A2CServiceProvider(state_shape_defender
                                 alpha_dnn1, alpha_dnn2, warmup_time, attack_campaign_duration, device) for agent in env.providers}
 
 for agent_name, agent in service_providers.items():
-    # Load Action NN and its optimizer
+    # Load Action NN and its optimiser
     filter_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_filter.pth'))
     agent.filter_nn.load_state_dict(filter_checkpoint['filter_nn'])
     agent.filter_opt.load_state_dict(filter_checkpoint['filter_opt'])
     
-    # Load Opinion NN and its optimizer
+    # Load Opinion NN and its optimiser
     answer_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_answer.pth'))
     agent.answer_nn.load_state_dict(answer_checkpoint['answer_nn'])
     agent.answer_opt.load_state_dict(answer_checkpoint['answer_opt'])
