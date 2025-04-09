@@ -31,17 +31,8 @@ experiment = 1 # baseline experiment
 
 # %% [markdown]
 # Specify output directory
-cs_cluster = False
-myriad = False
-if cs_cluster:
-    save_path = f"/home/kpadur/results/output_data/"
-    save_nns_path = f"/home/kpadur/results/output_data/"
-elif myriad:
-    save_path = f"/home/ucabpad/Scratch/workspace/output_data/"
-    get_nn_path = f"/home/ucabpad/Scratch/workspace/output_data/" # to be changed
-else:   
-    save_path = "/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/test-results/exp1-test-results/"
-    get_nn_path = f"/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/regagent-parameters/"
+save_path = os.path.join("results", "exp1-results")
+get_nn_path = os.path.join("regagent-parameters")
 
 # %% [markdown]
 # Specify number of agents in the environment
@@ -51,7 +42,7 @@ nMalAgents = 0
 
 # %% [markdown]
 # Initialise (tuned) hyperparameters
-hyperparameters = read_csv_to_dict("hyperparameters.csv")
+hyperparameters = read_csv_to_dict("parameters/hyperparameters.csv")
 alpha_rnn1 = hyperparameters['alpha_1']
 alpha_rnn2 = hyperparameters['alpha_2']
 gamma_rnn1 = hyperparameters['gamma_1']
@@ -63,7 +54,7 @@ beta_decay = hyperparameters['n_1']
 # %% [markdown]
 # Initialise social network, cyber-physical system, and agent parameters
 # Load parameters
-parameters = read_csv_to_dict("parameters.csv")
+parameters = read_csv_to_dict("parameters/parameters.csv")
 
 # Social network parameters
 kappa = parameters['kappa']
@@ -85,9 +76,9 @@ forgetting_factor = parameters['forgetting_factor']
 # Define training time, visualisation and saving frequency
 n_steps = 500 # number of steps per episode
 number_of_episodes = 100
-vis_freq = 1000
+vis_freq = 10
 saving_freq = 10
-save_fig = False # save figures
+save_fig = False
 
 # %% [markdown]
 # Initialise seed for reproducibility
@@ -107,10 +98,8 @@ env = Environment(nRegAgents, nProviders,
 # Create lists of agents, form social network of agents, and create attributes
 regagents, providers, neighbours = env.regagents, env.providers, env.neighbours
 
+# Predefine malicious agents set
 malagents = [54, 30, 103, 109, 47, 76, 77, 99, 9, 69]
-
-# Pick one agent randomly from each type of agents
-#regagent_example = np.random.choice(regagents)
 
 # Define regular agents' state space, actions, and opinions
 observation_space, action_space = env.observation_spaces[f"regagent{0}"], env.action_spaces[f"regagent{0}"]
@@ -120,6 +109,7 @@ state_shape, n_actions, n_opinions = \
 
 # Reset environment state
 envstate, info = env.reset(seed=seed)
+
 print("Regular agents' state shape is", state_shape, ", number of actions is", n_actions, " and number of opinions is", n_opinions)
 # %% [markdown]
 #  Initialise agents
@@ -128,12 +118,12 @@ regular_agents = {f"regagent{agent}": A2CRegAgent(state_shape, n_actions, n_opin
 
 for agent_name, agent in regular_agents.items():
     # Load Action NN and its optimizer
-    action_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_actions_2025-01-22_743.pth'))
+    action_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_actions.pth'))
     agent.action_nn.load_state_dict(action_checkpoint['actions_state_dict'])
     agent.action_opt.load_state_dict(action_checkpoint['actions_opt_state_dict'])
 
     # Load Opinion NN and its optimizer
-    opinion_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_opinions_2025-01-22_743.pth'))
+    opinion_checkpoint = torch.load(os.path.join(get_nn_path, f'{agent_name}_checkpoint_opinions.pth'))
     agent.opinion_nn.load_state_dict(opinion_checkpoint['opinions_state_dict'])
     agent.opinion_opt.load_state_dict(opinion_checkpoint['opinions_opt_state_dict'])
 
@@ -155,8 +145,9 @@ regagent_actions_pd = pd.DataFrame()
 # Training regular agents and visualise data
 for episode in range(1, number_of_episodes + 1):
 
+    # Generate seed for the episode
     episode_seed = np.random.randint(0, 10000)
-    print("episode seed", episode_seed)
+
     observations, _ = env.reset(seed = episode_seed)
 
     # Restart environment
@@ -194,7 +185,7 @@ for episode in range(1, number_of_episodes + 1):
             all_actions[agent_name].append(actions[agent_name])
 
     # Store regular agents information, including states, actions, and rewards
-    # Process regagent states (Cannot group agents, therefore, grouping them all together)
+    # Process regagent states
     attack_target = 1
     episode_states_pd = process_regagent_states_groups(all_observations, all_actions, providers, malagents, neighbours,
                                    attack_target, episode, n_steps)
