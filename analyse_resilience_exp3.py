@@ -26,7 +26,7 @@ import matplotlib.cm as cm
 
 # %% [markdown]
 # Setup device, date, chapter, and experiment
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # currently cpu
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu') # cpu
 date = datetime.datetime.now().strftime("%Y-%m-%d")
 timestamp = datetime.datetime.now().strftime("%H-%M-%S")
 chapter = 5
@@ -34,7 +34,7 @@ experiment = 3 # with defence
 machine_id = os.environ.get('MACHINE_ID', '1') # Default machine ID is 1, pick another to try different attack strategies
 # %% [markdown]
 # Specify output directory
-save_path = os.path.join("results", "exp2-results")
+save_path = os.path.join("results", "exp3-results")
 get_nn_path = os.path.join("regagent-parameters")
 get_others_nn_path = os.path.join("attacker-defender-parameters")
 get_param = os.path.join("parameters")
