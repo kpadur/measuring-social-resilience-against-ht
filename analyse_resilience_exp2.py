@@ -4,6 +4,7 @@
 # Experiment 2\
 # With this experiment, we analyse how the social component of the Cyber-Physical-Social system can plan, absorb, recover from and adapt to hybrid threats.\
 # We analyse how different groups of individuals (directly affected or indirectly affected) experience disruption and how they recover from it.
+# In this experiment, only attackers are active in the environment.
 
 # %% [markdown]
 # Import libraries
@@ -166,12 +167,12 @@ service_providers = {f"defagent{agent}": A2CServiceProvider(state_shape_defender
                     for agent in env.providers}
 
 for agent_name, agent in service_providers.items():
-    # Load Action NN and its optimizer % get_others_nn_path
+    # Load Action NN and its optimiser
     filter_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_filter.pth'))
     agent.filter_nn.load_state_dict(filter_checkpoint['filter_nn'])
     agent.filter_opt.load_state_dict(filter_checkpoint['filter_opt'])
     
-    # Load Opinion NN and its optimizer
+    # Load Opinion NN and its optimiser
     answer_checkpoint = torch.load(os.path.join(get_others_nn_path, f'{agent_name}_checkpoint_answer.pth'))
     agent.answer_nn.load_state_dict(answer_checkpoint['answer_nn'])
     agent.answer_opt.load_state_dict(answer_checkpoint['answer_opt'])
@@ -196,18 +197,18 @@ malicious_agent = {f"malagent": A2CMalAgent(state_size_attackers, n_stage_action
                  alpha_ann1, alpha_ann2, alpha_ann3, warmup_time, attack_campaign_duration, device)}
 
 for agent_name, agent in malicious_agent.items():
-    # Load Action NN and its optimizer
-    stage_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_stage_action.pth')) # local
+    # Load Action NN and its optimiser
+    stage_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_stage_action.pth'))
     agent.stage_action_nn.load_state_dict(stage_checkpoint['stage_action_nn'])
     agent.stage_action_opt.load_state_dict(stage_checkpoint['stage_action_opt'])
     
-    # Load Opinion NN and its optimizer
-    cyber_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_cyber.pth')) # local
+    # Load Opinion NN and its optimiser
+    cyber_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_cyber.pth'))
     agent.cyber_action_nn.load_state_dict(cyber_checkpoint['cyber_action_nn'])
     agent.cyber_action_opt.load_state_dict(cyber_checkpoint['cyber_action_opt'])
 
-    # Load Opinion NN and its optimizer
-    disinfo_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_disinfo.pth')) # local
+    # Load Opinion NN and its optimiser
+    disinfo_checkpoint = torch.load(os.path.join(get_others_nn_path,f'{agent_name}_checkpoint_disinfo.pth'))
     agent.disinfo_action_nn.load_state_dict(disinfo_checkpoint['disinfo_action_nn'])
     agent.disinfo_action_opt.load_state_dict(disinfo_checkpoint['disinfo_action_opt'])
 
