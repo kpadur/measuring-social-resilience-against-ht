@@ -5,30 +5,30 @@ These threats have become more frequent over the past decade, raising concerns a
 However, research on applying resilience principles to understand how people can counter these threats remains limited.
 ## Project structure
 ```
-applying-marl-ht-and-defence/
+measuring-social-resilience-against-ht/
+├── others-parameters                # Folder contraining trained neural networks for attackers and defenders
+├── data                             # Folder containing data on attack strategies
 ├── parameters                       # Folder containing data and R scripts for hyperparameter tuning
     ├── hyperparameters.csv          # (Tuned) hyperparameter values
     └── parameters.csv               # Parameter values
 ├── regagent-parameters              # Folder contraining trained neural networks for regular agents
-├── others-parameters                # Folder contraining trained neural networks for attackers and defenders
 ├── results                          # Folder containing R scripts for results analysis and visualisation
     ├── exp1-results                 # Folder containing example data from experiment 1
     ├── exp2-results                 # Folder containing example data from experiment 2
     ├── exp3-results                 # Folder containing example data from experiment 3
     ├── exp1-analysis.R              # R script for analysing and visualising experiment 1 data
-    ├── exp2-attack-analysis.R       # R script for analysing and visualising attacker behaviour
-    └── exp2-defence-analysis.R      # R script for analysing and visualising defender behaviour
+    ├── exp2-3-analysis.R            # R script for analysing experiment 2 and 3 data
+    └── exp2-3-data-prep.R           # R script for preparing experiment 2 and 3 data for analysis
 ├── a2c_agent.py                     # Regular agents' behaviour in the environment
 ├── a2c_def_agent.py                 # Defenders' behaviour in the environment
 ├── a2c_mal_agent.py                 # Attackers' behaviour in the environment
-├── data_analysis.py                 # Functions to analyse training data
-├── environment_exp1.py              # Environment setup for experiment 1
-├── environment_exp2.py              # Environment setup for experiment 2
-├── environment_exp3.py              # Environment setup for experiment 3
-├── nns.py                           # Architecture of deep neural networks
 ├── analyse_resilience_exp1.py       # Experiment for measuring social resilience (experiment 1)
 ├── analyse_resilience_exp2.py       # Experiment for measuring social resilience, attackers in the environment (experiment 2)
 ├── analyse_resilience_exp3.py       # Experiment for measuring social resilience, attackers and defenders in the environment (experiment 3)
+├── data_analysis.py                 # Functions to analyse training data
+├── environment_exp1.py              # Environment setup for experiment 1
+├── environment_exp2_3.py            # Environment setup for experiment 2 and 3
+├── nns.py                           # Architecture of deep neural networks
 ├── LICENSE.md                       # License
 └── README.md                        # Project documentation
 ```
@@ -46,9 +46,7 @@ The following Python libraries are required:
 - gymnasium (version 0.29.1 or higher)
 - networkx (version 3.0 or higher)
 - pettingzoo (version 1.24.1 or higher)
-- optuna (version 3.6.1 or higher)
-- SALib (version 1.5.0 or higher)
-- statsmodels (version 0.14.2 or higher)
+- IPython (version 8.18.1 or higher)
 
 R version 4.4.2 or higher version is required for data analysis and visualisation.
 
@@ -70,9 +68,10 @@ python analyse_resilience_exp2.py
 python analyse_resilience_exp3.py
 ```
 ## Results
-Results will be saved to ```/results``` directory. Experiment 1 results are located in ```/results/exp1-results``` and experiment 2 results are located in ```/results/exp2-results```.
+Results will be saved to ```/results``` directory. Experiment 1 results are located in ```/results/exp1-results```, experiment 2 results are located in ```/results/exp2-results```, 
+and experiment 3 results are located in ```/results/exp3-results```.
 
-Directory ```/regagent-parameters``` contains trained deep neural networks from experiment 1 that are used in experiment 2.
+Directory ```/regagent-parameters``` and ```/attacker-defender--parameters``` contains trained deep neural networks.
 
 ## Contact
 For any questions or issues, please feel free to contact [kart.padur.20@ucl.ac.uk] and I will be happy to assist.
