@@ -2,11 +2,11 @@ import pandas as pd
 import numpy as np
 import random
 
-def moving_average(data):
+def moving_average(data): #
     window_size = 200
     return np.convolve(data, np.ones(window_size)/window_size, mode='valid')
 
-def populate_attack_strategy(strategy_df, attack_strategy, warmup_time):
+def populate_attack_strategy(strategy_df, attack_strategy, warmup_time): #
     stage_actions = {
         'recon': 0,
         'cyber': (1, 4),
@@ -46,7 +46,7 @@ def populate_attack_strategy(strategy_df, attack_strategy, warmup_time):
     return attack_strategy
 
 def process_regagent_states_groups(all_observations, all_actions, providers, malagents, neighbours,
-                                   attack_target, step, n_steps):
+                                   attack_target, step, n_steps): #
     # Only process regagent states
     regagent_observations = {agent: values for agent, values in all_observations.items() if agent.startswith('regagent')}
     # Determine only regagent actions
@@ -98,57 +98,7 @@ def process_regagent_states_groups(all_observations, all_actions, providers, mal
 
     return regagent_states_df
 
-# def process_regagent_states_average(all_observations, providers, step, n_steps):
-#     # Only process regagent states
-#     all_regagent_observations = {agent: values for agent, values in all_observations.items() if agent.startswith('regagent')}
-
-#     # Initialise a matrix to hold the average trust values for each service provider at each time step
-#     average_trust = np.zeros((n_steps, len(providers)))
-
-#     # Initialise column names for the DataFrame
-#     columns = [f"trust_in_sp{j}" for j in range(len(providers))]
-#     # Initialise a pandas dataframe for storing data
-#     average_trust_pd = pd.DataFrame(index=range(n_steps), columns=columns)
-
-#     # Calculate the average trust values for each service provider at each time step
-#     for t in range(n_steps):
-#         total_trust = np.zeros(len(providers))
-#         for agent in all_regagent_observations:
-#             total_trust += all_regagent_observations[agent][t]
-#         average_trust[t] = total_trust / len(all_regagent_observations)
-#         # Fill the DataFrame
-#         for i, trust in enumerate(average_trust[t]):
-#             column_name = f"trust_in_sp{i}"
-#             average_trust_pd.at[t, column_name] = trust
-    
-#     # Add 'episode' and 'timestep' columns
-#     average_trust_pd.insert(0, 'episode', step)
-#     average_trust_pd.insert(1, 'timestep', range(n_steps))
-
-#     return average_trust_pd
-
-# def process_regagent_states(all_observations, step, n_steps):
-#     # Determine the number of columns based on the structure of 'all_observations'
-#     columns = [f"{agent}_trust_in_sp{j}" for agent in all_observations if agent.startswith('regagent') for j in range(len(next(iter(all_observations.values()))[0]))]
-
-#     # Pre-allocate DataFrame
-#     episode_states_pd = pd.DataFrame(index=range(n_steps + 1), columns=columns)
-    
-#     # Fill the DataFrame
-#     for agent, values in all_observations.items():
-#         if agent.startswith('regagent'):
-#             for timestep, trust_values in enumerate(values):
-#                 for sp_index, trust in enumerate(trust_values):
-#                     column_name = f"{agent}_trust_in_sp{sp_index}"
-#                     episode_states_pd.at[timestep, column_name] = trust
-
-#     # Add 'episode' and 'timestep' columns
-#     episode_states_pd.insert(0, 'episode', step)
-#     episode_states_pd.insert(1, 'timestep', range(n_steps + 1))
-
-#     return episode_states_pd
-
-def process_regagent_actions(all_actions, providers, n_steps):
+def process_regagent_actions(all_actions, providers, n_steps): #
     """
     Calculate the average service request rate (per episode) for each service provider and
     the average opinion experssing rate (per episode) for each service provider.
@@ -170,7 +120,7 @@ def process_regagent_actions(all_actions, providers, n_steps):
 
     return mean_selection_rate, mean_expression_rate
 
-def process_regagent_rewards(episode_rewards):
+def process_regagent_rewards(episode_rewards): #
     # Determine total rewards
     regagent_rewards = {agent_name: value for agent_name, value in episode_rewards.items() if agent_name.startswith('regagent')}
     sum_regagent_rewards = sum([sum(r) for rewards in regagent_rewards.values() for r in rewards])
@@ -180,7 +130,7 @@ def process_regagent_rewards(episode_rewards):
     feedback = sum([r[1] for rewards in regagent_rewards.values() for r in rewards])
     return sum_regagent_rewards, service, feedback
 
-def process_service_provider_availability(all_actions, providers, sum_sp_availability):
+def process_service_provider_availability(all_actions, providers, sum_sp_availability): #
     """
     Calculate average service availability rate per episode for each service provider (when requested).
     """
@@ -197,7 +147,7 @@ def process_service_provider_availability(all_actions, providers, sum_sp_availab
 
     return avg_service_availability
 
-def process_attacker_rewards(all_actions, episode_rewards):
+def process_attacker_rewards(all_actions, episode_rewards): #
     # Determine attacker rewards
     attack_actions = {agent_name: value for agent_name, value in all_actions.items() if agent_name.startswith('malagent')}
     attacker_rewards = {agent_name: value for agent_name, value in episode_rewards.items() if agent_name.startswith('malagent')}
@@ -215,8 +165,8 @@ def process_attacker_rewards(all_actions, episode_rewards):
         contact_rewards += sum(misinfo_reward.values())
     return np.sum(attack_stage_rewards), np.sum(recon_rewards), np.sum(term_rewards), np.sum(bot_rewards), contact_rewards
 
-def process_attacker_actions(all_actions, n_cyber_actions, n_misinfo_actions):
-    # Collect attacker's data at every step for visualisation MISSING
+def process_attacker_actions(all_actions, n_cyber_actions, n_misinfo_actions): #
+    # Collect attacker's data at every step for visualisation
     all_attack_actions = {agent_name: value for agent_name, value in all_actions.items() if agent_name.startswith('malagent')}
     # Cyberattack actions
     attack_actions = np.array([action[1] for actions in all_attack_actions.values() for action in actions]) + 1 # so that -1 would account to 0
@@ -243,7 +193,7 @@ def process_attacker_actions(all_actions, n_cyber_actions, n_misinfo_actions):
     episode_attack_order, episode_count_actions_per_stage = determine_attack_order_and_length(stage_actions)
     return bot_counts, misinfo_counts, episode_attack_order, episode_count_actions_per_stage
 
-def determine_attack_order_and_length(stage_actions):
+def determine_attack_order_and_length(stage_actions): #
     # Stage actions is an array of actions made by the attacker in each attack stage that determines how attacker 'moves' between stages
     # Actions
     # Attack stage
@@ -279,7 +229,7 @@ def determine_attack_order_and_length(stage_actions):
     # return stage_actions, attack_order, count_actions_per_stage
     return episode_attack_order, episode_count_actions_per_stage
 
-def process_defender_rewards(episode_rewards, providers):
+def process_defender_rewards(episode_rewards, providers): #
     defenders_rewards = {agent_name: value for agent_name, value in episode_rewards.items() if agent_name.startswith('defagent')}
     filter_rewards = np.zeros(len(providers))
     answer_rewards = np.zeros(len(providers))
