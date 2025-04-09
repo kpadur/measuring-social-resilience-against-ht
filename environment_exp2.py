@@ -36,7 +36,6 @@ class Environment(AECEnv):
         self.forgetting_factor = forgetting_factor
 
         # Create social network as a graph (G = (V, E)) and neighbours dictionary
-        # self.social_network = nx.Graph()
         self.neighbours = {}
         self._form_social_network()
 
@@ -310,7 +309,6 @@ class Environment(AECEnv):
         # While there are nodes left in the remaining_nodes list
         while remaining_nodes:
             node = remaining_nodes.pop()
-            # neighbors = list(self.social_network.neighbors(node))
             neighbors = self.neighbours[node]
             random.shuffle(neighbors)
 
