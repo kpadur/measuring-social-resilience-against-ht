@@ -6,8 +6,8 @@
 library(tidyverse)
 
 # Define the path and pattern
-path <- "/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/results/exp2-results/"
-pattern <- "*-5-regagents-trust-data\\.csv"
+path <- "exp2-results/"
+pattern <- ".*-1-.*-regagents-trust-data\\.csv" # # change number based on strategy id
 
 # List and read all matching files
 files <- list.files(path = path, pattern = pattern, full.names = TRUE)
@@ -48,5 +48,5 @@ if ("timestep" %in% colnames(combined_all_episodes)) {
 plot(subset(stats_df$group3_trust_in_sp1_mean, stats_df$timestep > 0))
 
 # Write summary_stats to csv
-write.csv(stats_df, "/Users/kartpadur/Documents/GitHub/pytorch_project/ch5-resilience/results/exp2-results/attack-strategies/summary_stats_df_strategy_5.csv",
+write.csv(stats_df, "exp2-results/attack-strategies/summary_stats_df_strategy_1.csv",
           row.names=FALSE)
