@@ -1,0 +1,11 @@
+parameter,value
+center_up_to_down,0.01
+center_down_to_up,0.25
+end_up_to_down,0.03
+end_down_to_up,0.3
+cost,0.5
+kappa,6
+rho,0.05
+direct_exp_weight,0.9
+feedback_adj_rate,0.50
+forgetting_factor,0.9
