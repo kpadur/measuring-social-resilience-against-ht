@@ -179,100 +179,6 @@ class Environment(AECEnv):
 
         return self.observations, rewards, self.terminations, self.truncations, self.infos
 
-    # def render(self, graph_type='both'):
-    #     """
-    #     Displays rendered frames from the environment for actions and/or opinions.
-    #     Parameters:
-    #     - graph_type: 'both', 'actions', or 'opinions' to control which graph(s) to display.
-    #     """
-    #     if graph_type not in ['both', 'actions', 'opinions']:
-    #         raise ValueError("Invalid graph_type. Choose 'both', 'actions', or 'opinions'.")
-
-    #     # Create subplots conditionally
-    #     if graph_type == 'both':
-    #         fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 8))
-    #     else:
-    #         fig, ax = plt.subplots(1, 1, figsize=(8, 8))
-        
-    #     # Create a new graph for visualization purposes
-    #     combined_graph = nx.Graph(self.social_network)  # Copy the original social network
-
-    #     # Define colors for the original nodes
-    #     node_colors_actions = {}
-    #     node_colors_opinions = {}
-    #     for node in self.social_network.nodes:
-    #         if node in self.regagents:
-    #             node_colors_actions[node] = 'gold'  # Colour for regular agents
-    #             node_colors_opinions[node] = 'gold'  # Same color initially for opinions
-    #         else:
-    #             node_colors_actions[node] = 'red'  # Colour of malicious agents
-    #             node_colors_opinions[node] = 'red'  # Same for opinions
-
-    #     # Adding 3 new separate nodes with no connections
-    #     extra_nodes = ['$d_1$', '$d_2$', '$d_3$']
-    #     extra_colors = {'$d_1$': 'tab:blue', '$d_2$': 'tab:orange', '$d_3$': 'tab:green'}
-    #     for extra_node in extra_nodes:
-    #         combined_graph.add_node(extra_node)
-    #         node_colors_actions[extra_node] = extra_colors[extra_node]
-    #         node_colors_opinions[extra_node] = extra_colors[extra_node]
-
-    #     # Manually position the extra nodes
-    #     pos = nx.spring_layout(self.social_network, k=0.5, seed=42)
-    #     pos['$d_1$'] = [0.5, 0.9]
-    #     pos['$d_2$'] = [-0.9, -0.9]
-    #     pos['$d_3$'] = [0.9, -0.9]
-
-    #     if self.timestep > 1:
-    #         for agent in self.regagents:
-    #             agent_name = f"regagent{agent}"
-    #             action = self.actions_taken[agent_name]
-    #             if action == 0:
-    #                 node_colors_actions[agent] = 'tab:blue'
-    #             elif action == 1:
-    #                 node_colors_actions[agent] = 'tab:orange'
-    #             else:
-    #                 node_colors_actions[agent] = 'tab:green'
-
-    #             # Opinions
-    #             opinion = self.opinion_expressed[agent_name]
-    #             if opinion == 0:
-    #                 node_colors_opinions[agent] = 'powderblue'
-    #             elif opinion == 1:
-    #                 node_colors_opinions[agent] = 'tab:blue'
-    #             elif opinion == 2:
-    #                 node_colors_opinions[agent] = 'peachpuff'
-    #             elif opinion == 3:
-    #                 node_colors_opinions[agent] = 'tab:orange'
-    #             elif opinion == 4:
-    #                 node_colors_opinions[agent] = 'lightgreen'
-    #             elif opinion == 5:
-    #                 node_colors_opinions[agent] = 'tab:green'
-
-    #     # Plot for actions if requested
-    #     if graph_type in ['both', 'actions']:
-    #         ax = ax1 if graph_type == 'both' else ax  # Choose correct axis if 'both' or 'actions'
-    #         edge_colors = [combined_graph[u][v].get('color', 'gray') for u, v in combined_graph.edges]
-    #         edge_styles = [combined_graph[u][v].get('style', 'solid') for u, v in combined_graph.edges]
-
-    #         nx.draw_networkx_edges(combined_graph, pos=pos, edgelist=combined_graph.edges, edge_color=edge_colors, style=edge_styles, alpha=0.6, ax=ax)
-    #         nx.draw_networkx_nodes(combined_graph, pos=pos, node_color=[node_colors_actions.get(node, 'mediumvioletred') for node in combined_graph.nodes], node_size=[300 if node in self.social_network.nodes else 2000 for node in combined_graph.nodes], ax=ax)
-    #         ax.text(0, 1, "A", transform=ax.transAxes, fontsize=20, verticalalignment='top')
-    #         ax.axis('off')
-
-    #     # Plot for opinions if requested
-    #     if graph_type in ['both', 'opinions']:
-    #         ax = ax2 if graph_type == 'both' else ax  # Choose correct axis if 'both' or 'opinions'
-    #         edge_colors = [combined_graph[u][v].get('color', 'gray') for u, v in combined_graph.edges]
-    #         edge_styles = [combined_graph[u][v].get('style', 'solid') for u, v in combined_graph.edges]
-
-    #         nx.draw_networkx_edges(combined_graph, pos=pos, edgelist=combined_graph.edges, edge_color=edge_colors, style=edge_styles, alpha=0.6, ax=ax)
-    #         nx.draw_networkx_nodes(combined_graph, pos=pos, node_color=[node_colors_opinions.get(node, 'mediumvioletred') for node in combined_graph.nodes], node_size=[300 if node in self.social_network.nodes else 2000 for node in combined_graph.nodes], ax=ax)
-    #         ax.text(0, 1, "B", transform=ax.transAxes, fontsize=20, verticalalignment='top')
-    #         ax.axis('off')
-
-    #     plt.tight_layout()
-    #     return fig  # Return the figure without showing it
-
     @property
     def num_agents(self) -> int: # length of the agent list
         return len(self.agents)
@@ -286,11 +192,6 @@ class Environment(AECEnv):
         Creates social network graph as a small-world network with high clustering and low average path length,
         here, Watts-Strogatz graph.
         """
-        # self.graph = nx.watts_strogatz_graph(self.nAgents, self.kappa, self.rho)
-        # self.social_network.add_nodes_from(self.graph)
-        # self.social_network.add_edges_from(self.graph.edges)
-        # Create neighbours dictionary
-        # self.neighbours = nx.to_dict_of_lists(self.social_network)
         self.neighbours = {0: [1, 109, 2, 108, 3, 107], 1: [0, 2, 3, 109, 4, 108], 2: [0, 1, 3, 4, 5], 3: [0, 1, 2, 5, 6, 54], 4: [1, 2, 5, 6, 7], 5: [2, 3, 4, 6, 7, 8], 6: [3, 4, 5, 7, 8, 9], 7: [4, 5, 6, 8, 9, 10], 8: [5, 6, 7, 9, 10, 11], 9: [6, 7, 8, 10, 11, 12, 36], 10: [7, 8, 9, 11, 12, 13, 109],\
                         11: [8, 9, 10, 12, 13, 14], 12: [9, 10, 11, 13, 14, 15], 13: [10, 11, 12, 14, 15, 16], 14: [11, 12, 13, 15, 16, 17], 15: [12, 13, 14, 16, 17, 18], 16: [13, 14, 15, 17, 18, 19], 17: [14, 15, 16, 18, 19, 20], 18: [15, 16, 17, 19, 20, 21], 19: [16, 17, 18, 20, 21, 22, 103], 20: [17, 18, 19, 21, 22, 23], \
                         21: [18, 19, 20, 22, 23, 24], 22: [19, 20, 21, 23, 24, 25], 23: [20, 21, 22, 24, 25, 26], 24: [21, 22, 23, 25, 26, 27], 25: [22, 23, 24, 26, 27, 28], 26: [23, 24, 25, 27, 28, 29], 27: [24, 25, 26, 28, 29, 30], 28: [25, 26, 27, 29, 30, 31], 29: [26, 27, 28, 30, 31, 32], 30: [27, 28, 29, 31, 32, 33, 67], \
@@ -309,21 +210,7 @@ class Environment(AECEnv):
         """
         # Create list of all agents
         self.sn_agents = [agent for agent in range(self.nAgents)]
-
-        # Specify list of malicious agents from all agents
-        # # NOTE: (Assumption) malicious agents location in the social network is selected based on their centrality 
-        # # and distance to other malicious agents (not connected to each other)
-        # # Compute the betweenness centrality of social network
-        # centrality = nx.betweenness_centrality(self.social_network)
-        # # Sort nodes by centrality score
-        # sorted_nodes = sorted(centrality.items(), key=lambda x: x[1], reverse=True)
-        # for node, centrality in sorted_nodes:
-        #     # Check if this node is a neighbor to any previously selected malicious nodes
-        #     if all(not self.social_network.has_edge(node, mal_node) for mal_node in self.malagents):
-        #         self.malagents.append(node)
-        #     if len(self.malagents) == self.nMalAgents:
-        #         break
-        # preset malagents
+        # Preset malagents
         self.malagents = [54, 30, 103, 109, 47, 76, 77, 99, 9, 69]
         # Specify list of regular agents from all remaining agents
         self.regagents = [regagent for regagent in self.sn_agents if regagent not in self.malagents]
