@@ -177,7 +177,7 @@ for agent_name, agent in service_providers.items():
 
 # %% [markdown]
 #  Get attack strategy against which to measure resilience
-df = pd.read_excel(os.path.join(get_data, 'attack_strategies_200.xlsx'))
+df = pd.read_excel(os.path.join(get_data, 'attack_strategies.xlsx'))
 number_of_strategies = len(df)
 # Attack strategies
 attack_strategies_array = np.zeros((number_of_strategies, n_steps + 1), dtype=int)
