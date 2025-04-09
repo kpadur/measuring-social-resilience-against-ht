@@ -7,7 +7,7 @@ library(tidyverse)
 
 # Define the path and pattern
 path <- "exp2-results/"
-pattern <- ".*-1-.*-regagents-trust-data\\.csv" # # change number based on strategy id
+pattern <- ".*-1-regagents-trust-data\\.csv" # # change number based on strategy id
 
 # List and read all matching files
 files <- list.files(path = path, pattern = pattern, full.names = TRUE)
