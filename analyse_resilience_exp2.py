@@ -162,7 +162,8 @@ for agent_name, agent in regular_agents.items():
 # %% [markdown]
 #  Initialise defenders
 service_providers = {f"defagent{agent}": A2CServiceProvider(state_shape_defenders, n_filter, n_answer, \
-                                                            alpha_dnn1, alpha_dnn2, device) for agent in env.providers}
+                                                            alpha_dnn1, alpha_dnn2, warmup_time, attack_campaign_duration, device) 
+                    for agent in env.providers}
 
 for agent_name, agent in service_providers.items():
     # Load Action NN and its optimizer % get_others_nn_path
