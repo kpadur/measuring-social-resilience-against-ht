@@ -7,7 +7,7 @@
 
 # %% [markdown]
 # Import libraries
-from environment_exp2 import Environment
+from environment_exp2_3 import Environment
 from a2c_agent import A2CRegAgent
 from a2c_def_agent import A2CServiceProvider
 from a2c_mal_agent import A2CMalAgent
