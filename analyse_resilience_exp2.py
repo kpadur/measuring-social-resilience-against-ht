@@ -93,7 +93,7 @@ forgetting_factor = parameters['forgetting_factor']
 # Define training time
 n_steps = 500 # number of steps per episode
 number_of_episodes = 100 # number of episodes
-vis_freq = 1000 # never visualise
+vis_freq = 1000
 saving_freq = 2
 save_fig = False # save figures
 warmup_time = 200 # no data is collected, to measure attack impact better
@@ -108,7 +108,7 @@ torch.manual_seed(seed)
 if torch.cuda.is_available():
     torch.cuda.manual_seed_all(seed)
 
-# %%
+# %% [markdown]
 # Create environment
 env = Environment(nRegAgents, nMalAgents, nProviders, 
                   kappa, rho, center_up_to_down, center_down_to_up, end_up_to_down, end_down_to_up, cost,
@@ -350,8 +350,6 @@ for episode in range(1, number_of_episodes + 1):
         defender_answer_rewards[episode][defender] = answer_rewards[defender]
         total_defender_rewards[episode][defender] = filter_rewards[defender] + answer_rewards[defender]
 
-    # if episode != 1 and episode % saving_freq == 0:
-    # Convert regagent lists to numpy arrays
     # Save regular agents' data
     regagents_df = pd.DataFrame({'total_rewards': regagent_total_rewards[1:episode+1], 'action_rewards': regagent_action_rewards[1:episode+1], 'opinion_rewards': regagent_opinion_rewards[1:episode+1],
                         'social_trust_sp0': social_trust_history[1:episode+1,0], 'social_trust_sp1': social_trust_history[1:episode+1,1], 'social_trust_sp2': social_trust_history[1:episode+1,2],
@@ -391,7 +389,6 @@ for episode in range(1, number_of_episodes + 1):
         clear_output(True)
         print("Episode", episode, ": mean attacker reward: %.3f" % (np.mean(total_attacker_rewards[:episode])),
               " and mean defender reward: %.3f" % (np.mean(total_defender_rewards[:episode])))
-    
 
         # Figure 1. Defender rewards
         plt.figure()
@@ -452,7 +449,7 @@ for episode in range(1, number_of_episodes + 1):
             plt.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{machine_id}-regagent-score.png'))
             plt.clf()
 
-        # Plot 2: Visualise social trust in service providers
+        # Plot 5: Visualise social trust in service providers
         colors = cm.tab10(np.arange(nProviders))
         plt.figure()
         for sp in range(nProviders):
@@ -465,7 +462,7 @@ for episode in range(1, number_of_episodes + 1):
             plt.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{machine_id}-trust.png'))
             plt.clf()
 
-        # Plot 3: Visualise service provider availability
+        # Plot 6: Visualise service provider availability
         plt.figure()
         for sp in range(nProviders):
             plt.plot(sp_availability_history[1:episode, sp], color=colors[sp], linewidth=0.9, label = "Provider  {}".format(sp+1))
@@ -477,7 +474,7 @@ for episode in range(1, number_of_episodes + 1):
             plt.savefig(os.path.join(save_path, f'ch{chapter}-exp{experiment}-{date}-{machine_id}-availability.png'))
             plt.clf()
 
-        # Plot 4.1: Visualise service request rate (%) per episode
+        # Plot 7.1: Visualise service request rate (%) per episode
         fig, axe = plt.subplots(nrows = 1, ncols = 2, figsize = (15,4))
         for sp in range(nProviders):
             axe[0].plot(regagent_actions_history[1:episode, sp], color=colors[sp], linewidth = 0.9,
@@ -487,7 +484,7 @@ for episode in range(1, number_of_episodes + 1):
         axe[0].set_ylabel("Average service request rate\nper episode")
         axe[0].grid()
         axe[0].legend(loc=(0.01, 0.50), fontsize='x-small')
-        # Plot 4.2: Visualise opinion expression rate (%) per episode
+        # Plot 7.2: Visualise opinion expression rate (%) per episode
         for o in range(nProviders*2):
             provider_index = o // 2
             opinion_type = "Negative" if o % 2 == 0 else "Positive"
